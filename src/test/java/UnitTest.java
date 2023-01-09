@@ -1,16 +1,29 @@
+import UtilClasses.TodoList;
 import UtilClasses.TodoServer;
 import UtilClasses.Todos;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class UnitTest {
-    protected final HashSet<Todos> expectedSet = new HashSet<>();
+    HashSet<Todos> expectedSet = new HashSet<>();
+    TodoServer todoServer = new TodoServer();
+    TodoList todoList = new TodoList();
+
+    public String expectedGetAllTasks(HashSet<Todos> expectedSet) {
+        return expectedSet.stream()
+                .sorted(Comparator.comparing(Todos::getTask))
+                .map(Todos::getTask)
+                .collect(Collectors.joining(" "));
+    }
 
     @Test
     public void seven_task_added() {
         System.out.println("------------------------Seven task added------------------------");
+
         expectedSet.add(new Todos("Уборка"));
         expectedSet.add(new Todos("Плаванье"));
         expectedSet.add(new Todos("Борьба"));
@@ -18,17 +31,16 @@ public class UnitTest {
         expectedSet.add(new Todos("Зарядка"));
         expectedSet.add(new Todos("Акробатика"));
         expectedSet.add(new Todos("Пробежка"));
-        String expected = new Todos().getAllTasks(expectedSet);
+        String expected = expectedGetAllTasks(expectedSet);
         System.out.println("Expected: " + expected);
 
-        TodoServer todoServer = new TodoServer();
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Уборка\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Плаванье\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Борьба\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Учёба\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Зарядка\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Акробатика\"}");
-        String result = todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Пробежка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Уборка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Плаванье\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Борьба\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Учёба\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Зарядка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Акробатика\"}");
+        String result = todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Пробежка\"}");
         System.out.println("Result: " + result);
         Assertions.assertEquals(expected, result);
     }
@@ -46,20 +58,19 @@ public class UnitTest {
 
         expectedSet.removeIf(todos -> todos.getTask().equals("Плаванье") || todos.getTask().equals("Зарядка"));
 
-        String expected = new Todos().getAllTasks(expectedSet);
+        String expected = expectedGetAllTasks(expectedSet);
         System.out.println("Expected: " + expected);
 
-        TodoServer todoServer = new TodoServer();
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Уборка\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Плаванье\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Борьба\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Учёба\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Зарядка\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Акробатика\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Пробежка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Уборка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Плаванье\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Борьба\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Учёба\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Зарядка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Акробатика\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Пробежка\"}");
 
-        todoServer.processClientJson(new Todos(),"{\"type\":\"REMOVE\",\"task\":\"Плаванье\"}");
-        String result = todoServer.processClientJson(new Todos(),"{\"type\":\"REMOVE\",\"task\":\"Зарядка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"REMOVE\",\"task\":\"Плаванье\"}");
+        String result = todoServer.processClientJson(todoList, "{\"type\":\"REMOVE\",\"task\":\"Зарядка\"}");
 
         System.out.println("Result: " + result);
         Assertions.assertEquals(expected, result);
@@ -75,18 +86,17 @@ public class UnitTest {
         expectedSet.add(new Todos("Зарядка"));
         expectedSet.add(new Todos("Акробатика"));
         expectedSet.add(new Todos("Пробежка"));
-        String expected = new Todos().getAllTasks(expectedSet);
+        String expected = expectedGetAllTasks(expectedSet);
         System.out.println("Expected: " + expected);
 
-        TodoServer todoServer = new TodoServer();
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Уборка\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Плаванье\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Борьба\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Учёба\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Зарядка\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Акробатика\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Пробежка\"}");
-        String result = todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Поход по магазинам\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Уборка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Плаванье\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Борьба\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Учёба\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Зарядка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Акробатика\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Пробежка\"}");
+        String result = todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Поход по магазинам\"}");
         System.out.println("Result: " + result);
         Assertions.assertEquals(expected, result);
     }
@@ -103,19 +113,18 @@ public class UnitTest {
         expectedSet.add(new Todos("Пробежка"));
 
         expectedSet.removeIf(todos -> todos.getTask().equals("Теннис"));
-        String expected = new Todos().getAllTasks(expectedSet);
+        String expected = expectedGetAllTasks(expectedSet);
         System.out.println("Expected: " + expected);
 
-        TodoServer todoServer = new TodoServer();
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Уборка\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Плаванье\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Борьба\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Учёба\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Зарядка\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Акробатика\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Пробежка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Уборка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Плаванье\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Борьба\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Учёба\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Зарядка\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Акробатика\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Пробежка\"}");
 
-        String result = todoServer.processClientJson(new Todos(),"{\"type\":\"REMOVE\",\"task\":\"Теннис\"}");
+        String result = todoServer.processClientJson(todoList, "{\"type\":\"REMOVE\",\"task\":\"Теннис\"}");
         System.out.println("Result: " + result);
         Assertions.assertEquals(expected, result);
     }
@@ -126,16 +135,15 @@ public class UnitTest {
         expectedSet.add(new Todos("Вторая"));
         expectedSet.add(new Todos("Первая"));
 
-        String expected = new Todos().getAllTasks(expectedSet);
+        String expected = expectedGetAllTasks(expectedSet);
         System.out.println("Expected: " + expected);
 
-        TodoServer todoServer = new TodoServer();
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Первая\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Вторая\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"REMOVE\",\"task\":\"Первая\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"ADD\",\"task\":\"Третья\"}");
-        todoServer.processClientJson(new Todos(),"{\"type\":\"RESTORE\"}");
-        String result = todoServer.processClientJson(new Todos(),"{\"type\":\"RESTORE\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Первая\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Вторая\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"REMOVE\",\"task\":\"Первая\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"ADD\",\"task\":\"Третья\"}");
+        todoServer.processClientJson(todoList, "{\"type\":\"RESTORE\"}");
+        String result = todoServer.processClientJson(todoList, "{\"type\":\"RESTORE\"}");
 
         System.out.println("Result: " + result);
         Assertions.assertEquals(expected, result);

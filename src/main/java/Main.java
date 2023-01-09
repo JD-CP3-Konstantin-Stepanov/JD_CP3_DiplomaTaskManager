@@ -1,5 +1,5 @@
+import UtilClasses.TodoList;
 import UtilClasses.TodoServer;
-import UtilClasses.Todos;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +14,7 @@ public class Main {
         try (ServerSocket server = new ServerSocket(8989)) {
             System.out.println("Сервер запущен");
             TodoServer todoServer = new TodoServer();
+            TodoList todoList = new TodoList();
             while (true) {
                 try (Socket clientSrv = server.accept();
                      PrintWriter writer = new PrintWriter(clientSrv.getOutputStream(), true);
@@ -31,7 +32,7 @@ public class Main {
                         System.out.println(jsonRequest);
                     }
 
-                    writer.print(todoServer.processClientJson(new Todos(), jsonRequest));
+                    writer.print(todoServer.processClientJson(todoList, jsonRequest));
                     writer.flush();
                 }
             }

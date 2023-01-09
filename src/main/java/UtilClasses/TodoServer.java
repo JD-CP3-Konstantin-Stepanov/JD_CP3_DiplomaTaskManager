@@ -4,20 +4,16 @@ import Client.TodoClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.util.HashSet;
-
 import java.util.LinkedList;
 import java.util.List;
 
 public class TodoServer {
-    private final HashSet<Todos> setTodos = new HashSet<>();
-    private final HashSet<String> uniqueSet = new HashSet<>();
     private final List<TodoClient> restoreSet = new LinkedList<>();
 
     public TodoServer() {
     }
 
-    public String processClientJson(Todos todos, String jsonFile) {
+    public String processClientJson(TodoList todoList, String jsonFile) {
         JSONParser parser = new JSONParser();
         String type;
         String task;
@@ -34,25 +30,24 @@ public class TodoServer {
 
         switch (type) {
             case "ADD" -> {
-                todos.addTask(task, uniqueSet, setTodos);
+                todoList.addTask(task);
                 restoreSet.add(new TodoClient(type, task));
             }
             case "REMOVE" -> {
-                todos.removeTask(task, setTodos);
-                uniqueSet.remove(task);
+                todoList.removeTask(task);
                 restoreSet.add(new TodoClient(type, task));
             }
             case "RESTORE" -> {
                 if (restoreSet.size() != 0) {
                     int index = restoreSet.size() - 1;
                     TodoClient todoClient = restoreSet.get(index);
-                    todos.restoreTask(todoClient.getType(), todoClient.getTask(), setTodos, uniqueSet);
+                    todoList.restoreTask(todoClient.getType(), todoClient.getTask());
                     restoreSet.remove(index);
                 }
             }
         }
 
-        return todos.getAllTasks(setTodos);
+        return todoList.getAllTasks();
     }
 
 }
