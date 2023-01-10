@@ -13,7 +13,7 @@ public class TodoServer {
     public TodoServer() {
     }
 
-    public String processClientJson(TodoList todoList, String jsonFile) {
+    public String processClientJson(Todos todos, String jsonFile) {
         JSONParser parser = new JSONParser();
         String type;
         String task;
@@ -30,24 +30,24 @@ public class TodoServer {
 
         switch (type) {
             case "ADD" -> {
-                todoList.addTask(task);
+                todos.addTask(task);
                 restoreSet.add(new TodoClient(type, task));
             }
             case "REMOVE" -> {
-                todoList.removeTask(task);
+                todos.removeTask(task);
                 restoreSet.add(new TodoClient(type, task));
             }
             case "RESTORE" -> {
-                if (restoreSet.size() != 0) {
+                if (!restoreSet.isEmpty()) {
                     int index = restoreSet.size() - 1;
                     TodoClient todoClient = restoreSet.get(index);
-                    todoList.restoreTask(todoClient.getType(), todoClient.getTask());
+                    todos.restoreTask(todoClient.getType(), todoClient.getTask());
                     restoreSet.remove(index);
                 }
             }
         }
 
-        return todoList.getAllTasks();
+        return todos.getAllTasks();
     }
 
 }

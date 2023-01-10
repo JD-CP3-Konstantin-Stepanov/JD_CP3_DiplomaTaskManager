@@ -1,6 +1,5 @@
 package Client;
 
-import UtilClasses.Todos;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -11,11 +10,12 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class TodoClient extends Todos {
+public class TodoClient {
+    protected String task;
     protected String type;
 
     public TodoClient(String task, String type) {
-        super(task);
+        this.task = task;
         this.type = type;
     }
 
@@ -52,7 +52,6 @@ public class TodoClient extends Todos {
             System.out.println("Не могу подключиться к серверу");
             ex.printStackTrace();
         }
-
     }
 
     public static String formJson(String type, String task) {
@@ -66,8 +65,7 @@ public class TodoClient extends Todos {
         return type;
     }
 
-    @Override
-    public String toString() {
-        return getTask() + " " + type;
+    public String getTask() {
+        return task;
     }
 }
